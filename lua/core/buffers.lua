@@ -28,6 +28,7 @@ local function floatingBuffer(BuffersList)
                 vim.api.nvim_win_close(winId, false)
         end, { buffer = bufId })
         vim.api.nvim_buf_attach(bufId, false, {
+                -- Needs to improve this shitty logic for multiple deletions
                 on_lines = function(_, _, _, firstline, lastline)
                         for i = firstline, lastline - 1 do
                                 local bufferItem = BuffersList[i + 1]

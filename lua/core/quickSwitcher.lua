@@ -4,6 +4,7 @@ local Input = require("nui.input")
 local event = require("nui.utils.autocmd").event
 
 local function fuzzy_match_buffers(input)
+        -- Improve this for uh pure buffer name match not the path itself
         local bufs = vim.api.nvim_list_bufs()
         local name = input._value or ""
         local matches = {}

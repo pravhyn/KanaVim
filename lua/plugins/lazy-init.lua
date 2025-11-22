@@ -66,7 +66,6 @@ require("lazy").setup({
         { import = "plugins.rainbow" },
         { import = "plugins.autoclose" },
         -- { import = "plugins.tabout" },
-        { import = "plugins.miniMove" },
         -- { import = "plugins.neogit" },
         { import = "plugins.lualine" },
         -- { import = "plugins.lspSignature" },
@@ -94,12 +93,12 @@ require("lazy").setup({
         { import = "plugins.cmd" },
         { import = "plugins.grug-far" },
         { import = "plugins.obsidian" },
+        { import = "plugins.mini-files" },
         -- { import = "plugins.nvim-spectre" },
         { import = "plugins.nvim-dbview" },
 
         -- Mini plugins
         { import = "miniPlugins.mini-ai" },
-        { import = "plugins.mini-files" },
         { import = "plugins.cmp" },
 })
 

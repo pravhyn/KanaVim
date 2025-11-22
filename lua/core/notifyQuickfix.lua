@@ -1,31 +1,42 @@
--- Automatically populate quickfix with error diagnostics on notify
-local notify = vim.notify
+-- lua/notify_to_qf.lua
+
+local notify = require("notify")
 
 vim.notify = function(msg, level, opts)
-        if level == vim.log.levels.ERROR then
-                vim.schedule(function()
-                        local diagnostics = vim.diagnostic.get(nil, { severity = vim.diagnostic.severity.ERROR })
-                        local qf_list = {}
+        -- still show the notification normally
+        notify(msg, level, opts)
 
-                        for _, d in ipairs(diagnostics) do
-                                table.insert(qf_list, {
-                                        bufnr = d.bufnr,
-                                        lnum = d.lnum + 1,
-                                        col = d.col + 1,
-                                        text = d.message,
-                                        type = "E",
-                                })
-                        end
-
-                        if #qf_list > 0 then
-                                vim.fn.setqflist({}, " ", {
-                                        title = "Diagnostics (Errors)",
-                                        items = qf_list,
-                                })
-                                vim.cmd("copen")
-                        end
-                end)
+        -- only handle live errors
+        if level ~= vim.log.levels.ERROR then
+                return
         end
 
-        notify(msg, level, opts)
+        -- extract first <file>:<line> occurrence
+        local file, line = msg:match("([A-Za-z]:[/\\%w%._%-]+%.%w+):(%d+)") or msg:match("(%S+%.%w+):(%d+)")
+
+        if file and line then
+                vim.fn.setqflist({}, "a", {
+                        title = "Notifications",
+                        items = {
+                                {
+                                        filename = file,
+                                        lnum = tonumber(line),
+                                        col = 1,
+                                        text = msg,
+                                        type = "E",
+                                },
+                        },
+                })
+        else
+                -- fallback: no file detected → still log text
+                vim.fn.setqflist({}, "a", {
+                        title = "Notifications",
+                        items = {
+                                {
+                                        text = msg,
+                                        type = "E",
+                                },
+                        },
+                })
+        end
 end

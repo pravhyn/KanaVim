@@ -24,6 +24,10 @@ vim.keymap.set("n", "<leader>fh", function()
         require("snacks.picker").help()
 end, { desc = "Help" })
 
+vim.keymap.set("n", "<leader>fs", function()
+        require("snacks.picker").explorer()
+end, { desc = " Snacks Explorer" })
+
 vim.keymap.set("n", "<leader>cc", function()
         require("snacks.picker").commands()
 end, { desc = "Commands" })
