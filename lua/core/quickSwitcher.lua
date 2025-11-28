@@ -6,6 +6,16 @@ local event = require("nui.utils.autocmd").event
 local current_buffer = vim.api.nvim_buf_get_name(0)
 local current_filename = vim.fn.fnamemodify(current_buffer, ":t")
 
+local function swallow_keys_for(ms)
+        local ns = vim.api.nvim_create_namespace("key_swallow")
+        vim.on_key(function()
+                -- eat everything
+        end, ns)
+
+        vim.defer_fn(function()
+                vim.on_key(nil, ns) -- restore key handling
+        end, ms)
+end
 local function fuzzy_match_buffers(input)
         -- Improve this for uh pure buffer name match not the path itself
         local bufs = vim.api.nvim_list_bufs()
@@ -82,6 +92,8 @@ local function open_buffer_switcher()
                         if #matches == 1 then
                                 vim.schedule(function()
                                         input:unmount()
+                                        swallow_keys_for(120) -- tweak 80–150 ms
+
                                         local win = vim.api.nvim_get_current_win()
                                         vim.api.nvim_win_set_buf(win, matches[1].id)
                                 end)
