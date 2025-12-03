@@ -18,7 +18,7 @@ local function notifications_to_lines()
                 local icon = n.icon or ""
                 local time = n.added and os.date("%Y-%m-%d %H:%M:%S", math.floor(n.added)) or "unknown"
 
-                table.insert(lines, string.rep("─", 80))
+                table.insert(lines, string.rep("─", 40))
                 table.insert(lines, string.format("%d. %s [%s] %s @ %s", i, icon, level:upper(), title, time))
 
                 if n.msg then
@@ -65,68 +65,137 @@ local function messages_to_buffer()
         return lines
 end
 
--- local notification_panel = Popup({
---         border = {
---                 style = "double",
---                 text = {
---                         top = "Notifications List",
---                         top_align = "center",
---                 },
---         },
---         enter = true,
--- })
--- local layout = Layout(
---         {
---                 relative = "editor",
---                 position = "50%",
---                 size = {
---                         height = 30,
---                         width = 190,
---                 },
---         },
---         Layout.Box({
---                 Layout.Box(notification_panel, { size = "100%" }),
---         }, { dir = "row" })
--- )
-
 local notification_panel = Popup({
         border = {
-                style = "rounded",
+                style = "double",
                 text = {
-                        top = " Notifications ",
+                        top = "Notifications List",
                         top_align = "center",
                 },
-                padding = {
-                        top = 1,
-                        bottom = 1,
-                        left = 2,
-                        right = 2,
-                },
         },
-        win_options = {
-                winblend = 5, -- slight transparency
-                wrap = true,
-                spell = false,
-        },
-        focusable = true,
         enter = true,
 })
-
--- Right-side half-width layout
-local layout = Layout({
-        relative = "editor",
-        position = {
-                row = 0,
-                col = math.floor(vim.o.columns / 2), -- ✅ right half
+local layout = Layout(
+        {
+                -- anchor = "SW",
+                relative = "editor",
+                position = {
+                        row = "10%",
+                        col = "50%",
+                },
+                size = {
+                        height = 40,
+                        width = 80,
+                },
         },
-        size = {
-                height = vim.o.lines - 2,
-                width = math.floor(vim.o.columns / 2), -- ✅ half width
-        },
-}, Layout.Box(Layout.Box(notification_panel, { size = "100%" }), { dir = "col" }))
+        Layout.Box({
+                Layout.Box(notification_panel, { size = "100%" }),
+        }, { dir = "row" })
+)
 
 layout:mount()
 
-local notifications_lines = notifications_to_lines()
+-- close on <Esc>
+notification_panel:map("n", "<Esc>", function()
+        notification_panel:unmount()
+end, { noremap = true })
 
-vim.api.nvim_buf_set_lines(notification_panel.bufnr, 0, -1, false, notifications_lines or "empty")
+-- local function snap(anchor, row, col, w, h)
+--         layout:update({
+--                 anchor = anchor,
+--                 relative = "editor",
+--                 position = { row = row, col = col },
+--                 size = { width = w, height = h },
+--         })
+-- end
+--
+-- notification_panel:map("n", "<C-w>l", function()
+--         snap("NE", "10%", "99%", 80, 40)
+-- end)
+--
+-- notification_panel:map("n", "<C-w>;", function()
+--         snap("NW", "10%", "50%", 80, 40)
+-- end)
+--
+-- notification_panel:map("n", "<C-w>k", function()
+--         snap("NE", "1%", "99%", 160, 20)
+-- end)
+
+-- shift Left Right Middle
+notification_panel:map("n", "<C-w>h", function()
+        layout:update({
+                -- anchor = "SW",
+                relative = "editor",
+                position = {
+                        row = "10%",
+                        col = "0%",
+                },
+                size = {
+                        height = 40,
+                        width = 80,
+                },
+        })
+end, { noremap = true })
+
+notification_panel:map("n", "<C-w>l", function()
+        layout:update({
+                -- anchor = "NE",
+                relative = "editor",
+                position = {
+                        row = "0%",
+                        col = "100%",
+                },
+                size = {
+                        height = 40,
+                        width = 80,
+                },
+        })
+end, { noremap = true })
+local notifications_lines = notifications_to_lines()
+notification_panel:map("n", "<C-w>;", function()
+        layout:update({
+                -- anchor = "SW",
+                relative = "editor",
+                position = {
+                        row = "10%",
+                        col = "50%",
+                },
+                size = {
+                        height = 40,
+                        width = 80,
+                },
+        })
+end, { noremap = true })
+
+notification_panel:map("n", "<C-w>k", function()
+        layout:update({
+                anchor = "NE",
+                relative = "editor",
+                position = {
+                        row = "1%",
+                        col = "100%",
+                },
+                size = {
+                        height = 20,
+                        width = 160,
+                },
+        })
+end, { noremap = true })
+
+notification_panel:map("n", "<C-w>j", function()
+        layout:update({
+                anchor = "NE",
+                relative = "editor",
+                position = {
+                        row = "100%",
+                        col = "1%",
+                },
+                size = {
+                        height = 20,
+                        width = 160,
+                },
+        })
+end, { noremap = true })
+vim.api.nvim_buf_set_lines(notification_panel.bufnr, 0, -1, false, notifications_lines or { "empty" })
+
+vim.keymap.set("n", "<leader>ft", function() end, { desc = "Notification Panel" })
