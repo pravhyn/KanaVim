@@ -109,6 +109,24 @@ return { -- Main LSP Configuration
                                         },
                                 },
                         },
+
+                        -- pyright = {
+                        --         single_file_support = true,
+                        --         settings = {
+                        --                 python = {
+                        --                         analysis = {
+                        --                                 autoSearchPaths = true,
+                        --                                 useLibraryCodeForTypes = true,
+                        --
+                        --                                 -- 🔥 THIS IS WHAT WILL CATCH `.length`
+                        --                                 typeCheckingMode = "strict",
+                        --
+                        --                                 -- Optional but very useful:
+                        --                                 diagnosticMode = "workspace",
+                        --                         },
+                        --                 },
+                        --         },
+                        -- },
                         -- Add more servers here if needed
                         -- tsserver = {},
                         -- jsonls = {},

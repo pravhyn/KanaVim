@@ -1,6 +1,76 @@
 -- ~/.config/nvim/lua/core/keymaps.lua
--- tim
--- to luafile the current file
+
+-- better up/down
+vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
+vim.keymap.set({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
+vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
+vim.keymap.set({ "n", "x" }, "<Up>", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
+
+-- buffers
+vim.keymap.set("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Prev Buffer" })
+vim.keymap.set("n", "<S-l>", "<cmd>bnext<cr>", { desc = "Next Buffer" })
+vim.keymap.set("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev Buffer" })
+vim.keymap.set("n", "]b", "<cmd>bnext<cr>", { desc = "Next Buffer" })
+vim.keymap.set("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
+vim.keymap.set("n", "<leader>`", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
+vim.keymap.set("n", "<leader>bd", function()
+        Snacks.bufdelete()
+end, { desc = "Delete Buffer" })
+vim.keymap.set("n", "<leader>bo", function()
+        Snacks.bufdelete.other()
+end, { desc = "Delete Other Buffers" })
+vim.keymap.set("n", "<leader>bD", "<cmd>:bd<cr>", { desc = "Delete Buffer and Window" })
+
+-- save file
+vim.keymap.set({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save File" })
+
+-- location list
+vim.keymap.set("n", "<leader>xl", function()
+        local success, err = pcall(vim.fn.getloclist(0, { winid = 0 }).winid ~= 0 and vim.cmd.lclose or vim.cmd.lopen)
+        if not success and err then
+                vim.notify(err, vim.log.levels.ERROR)
+        end
+end, { desc = "Location List" })
+
+-- quickfix list
+vim.keymap.set("n", "<leader>xq", function()
+        local success, err = pcall(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and vim.cmd.cclose or vim.cmd.copen)
+        if not success and err then
+                vim.notify(err, vim.log.levels.ERROR)
+        end
+end, { desc = "Quickfix List" })
+
+vim.keymap.set("n", "[q", vim.cmd.cprev, { desc = "Previous Quickfix" })
+vim.keymap.set("n", "]q", vim.cmd.cnext, { desc = "Next Quickfix" })
+
+local function project_root()
+        local root = vim.fn.systemlist("git rev-parse --show-toplevel")[1]
+        if root and root ~= "" then
+                return root
+        end
+        return vim.loop.cwd()
+end
+
+-- floating terminal
+vim.keymap.set("n", "<leader>fT", function()
+        Snacks.terminal()
+end, { desc = "Terminal (cwd)" })
+vim.keymap.set("n", "<leader>ft", function()
+        Snacks.terminal(nil, { cwd = project_root() })
+end, { desc = "Terminal (Root Dir)" })
+vim.keymap.set({ "n", "t" }, "<c-/>", function()
+        Snacks.terminal(nil, { cwd = project_root() })
+end, { desc = "Terminal (Root Dir)" })
+vim.keymap.set({ "n", "t" }, "<c-_>", function()
+        Snacks.terminal(nil, { cwd = project_root() })
+end, { desc = "which_key_ignore" })
+
+vim.keymap.set("n", "<leader>on", "<CMD>Nvumi<CR>", { desc = "[O]pen [N]vumi" })
+
+-- lua
+-- vim.keymap.set({ "n", "x" }, "<localleader>rc", function()
+--         Snacks.debug.run()
+-- end, { desc = "Run Lua", ft = "lua" })
 
 -- ================================
 -- Duplicate like VS Code (Alt+Shift)

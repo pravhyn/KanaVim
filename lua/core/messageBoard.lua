@@ -65,137 +65,151 @@ local function messages_to_buffer()
         return lines
 end
 
-local notification_panel = Popup({
-        border = {
-                style = "double",
-                text = {
-                        top = "Notifications List",
-                        top_align = "center",
+local function notification_panel_open()
+        local notification_panel = Popup({
+                border = {
+                        style = "double",
+                        text = {
+                                top = "Notifications List",
+                                top_align = "center",
+                        },
                 },
-        },
-        enter = true,
-})
-local layout = Layout(
-        {
-                -- anchor = "SW",
-                relative = "editor",
-                position = {
-                        row = "10%",
-                        col = "50%",
-                },
-                size = {
-                        height = 40,
-                        width = 80,
-                },
-        },
-        Layout.Box({
-                Layout.Box(notification_panel, { size = "100%" }),
-        }, { dir = "row" })
-)
-
-layout:mount()
-
--- close on <Esc>
-notification_panel:map("n", "<Esc>", function()
-        notification_panel:unmount()
-end, { noremap = true })
-
--- local function snap(anchor, row, col, w, h)
---         layout:update({
---                 anchor = anchor,
---                 relative = "editor",
---                 position = { row = row, col = col },
---                 size = { width = w, height = h },
---         })
--- end
---
--- notification_panel:map("n", "<C-w>l", function()
---         snap("NE", "10%", "99%", 80, 40)
--- end)
---
--- notification_panel:map("n", "<C-w>;", function()
---         snap("NW", "10%", "50%", 80, 40)
--- end)
---
--- notification_panel:map("n", "<C-w>k", function()
---         snap("NE", "1%", "99%", 160, 20)
--- end)
-
--- shift Left Right Middle
-notification_panel:map("n", "<C-w>h", function()
-        layout:update({
-                -- anchor = "SW",
-                relative = "editor",
-                position = {
-                        row = "10%",
-                        col = "0%",
-                },
-                size = {
-                        height = 40,
-                        width = 80,
-                },
+                enter = true,
         })
-end, { noremap = true })
+        local layout = Layout(
+                {
+                        -- anchor = "SW",
+                        relative = "editor",
+                        position = {
+                                row = "10%",
+                                col = "50%",
+                        },
+                        size = {
+                                height = 40,
+                                width = 80,
+                        },
+                },
+                Layout.Box({
+                        Layout.Box(notification_panel, { size = "100%" }),
+                }, { dir = "row" })
+        )
 
-notification_panel:map("n", "<C-w>l", function()
-        layout:update({
-                -- anchor = "NE",
-                relative = "editor",
-                position = {
-                        row = "0%",
-                        col = "100%",
-                },
-                size = {
-                        height = 40,
-                        width = 80,
-                },
-        })
-end, { noremap = true })
-local notifications_lines = notifications_to_lines()
-notification_panel:map("n", "<C-w>;", function()
-        layout:update({
-                -- anchor = "SW",
-                relative = "editor",
-                position = {
-                        row = "10%",
-                        col = "50%",
-                },
-                size = {
-                        height = 40,
-                        width = 80,
-                },
-        })
-end, { noremap = true })
+        layout:mount()
 
-notification_panel:map("n", "<C-w>k", function()
-        layout:update({
-                anchor = "NE",
-                relative = "editor",
-                position = {
-                        row = "1%",
-                        col = "100%",
-                },
-                size = {
-                        height = 20,
-                        width = 160,
-                },
-        })
-end, { noremap = true })
+        -- close on <Esc>
+        notification_panel:map("n", "<Esc>", function()
+                notification_panel:unmount()
+        end, { noremap = true })
 
-notification_panel:map("n", "<C-w>j", function()
-        layout:update({
-                anchor = "NE",
-                relative = "editor",
-                position = {
-                        row = "100%",
-                        col = "1%",
-                },
-                size = {
-                        height = 20,
-                        width = 160,
-                },
-        })
-end, { noremap = true })
-vim.api.nvim_buf_set_lines(notification_panel.bufnr, 0, -1, false, notifications_lines or { "empty" })
+        notification_panel:map("n", "q", function()
+                notification_panel:unmount()
+        end, { noremap = true })
+        -- local function snap(anchor, row, col, w, h)
+        --         layout:update({
+        --                 anchor = anchor,
+        --                 relative = "editor",
+        --                 position = { row = row, col = col },
+        --                 size = { width = w, height = h },
+        --         })
+        -- end
+        --
+        -- notification_panel:map("n", "<C-w>l", function()
+        --         snap("NE", "10%", "99%", 80, 40)
+        -- end)
+        --
+        -- notification_panel:map("n", "<C-w>;", function()
+        --         snap("NW", "10%", "50%", 80, 40)
+        -- end)
+        --
+        -- notification_panel:map("n", "<C-w>k", function()
+        --         snap("NE", "1%", "99%", 160, 20)
+        -- end)
 
-vim.keymap.set("n", "<leader>ft", function() end, { desc = "Notification Panel" })
+        -- shift Left Right Middle
+        notification_panel:map("n", "<C-w>h", function()
+                layout:update({
+                        -- anchor = "SW",
+                        relative = "editor",
+                        position = {
+                                row = "10%",
+                                col = "0%",
+                        },
+                        size = {
+                                height = 40,
+                                width = 80,
+                        },
+                })
+        end, { noremap = true })
+
+        notification_panel:map("n", "<C-w>l", function()
+                layout:update({
+                        -- anchor = "NE",
+                        relative = "editor",
+                        position = {
+                                row = "0%",
+                                col = "100%",
+                        },
+                        size = {
+                                height = 40,
+                                width = 80,
+                        },
+                })
+        end, { noremap = true })
+        notification_panel:map("n", "<C-w>;", function()
+                layout:update({
+                        -- anchor = "SW",
+                        relative = "editor",
+                        position = {
+                                row = "10%",
+                                col = "50%",
+                        },
+                        size = {
+                                height = 40,
+                                width = 80,
+                        },
+                })
+        end, { noremap = true })
+
+        notification_panel:map("n", "<C-w>k", function()
+                layout:update({
+                        -- anchor = "NE",
+                        relative = "editor",
+                        position = {
+                                row = "1%",
+                                col = "100%",
+                        },
+                        size = {
+                                height = 20,
+                                width = 160,
+                        },
+                })
+        end, { noremap = true })
+
+        notification_panel:map("n", "<C-w>j", function()
+                layout:update({
+                        anchor = "NE",
+                        relative = "editor",
+                        position = {
+                                row = "100%",
+                                col = "1%",
+                        },
+                        size = {
+                                height = 20,
+                                width = 160,
+                        },
+                })
+        end, { noremap = true })
+
+        notification_panel:map("n", "<localleader>r", function()
+                vim.api.nvim_buf_set_lines(
+                        notification_panel.bufnr,
+                        0,
+                        -1,
+                        false,
+                        notifications_to_lines() or { "empty" }
+                )
+        end, { noremap = true })
+        vim.api.nvim_buf_set_lines(notification_panel.bufnr, 0, -1, false, notifications_to_lines() or { "empty" })
+end
+
+vim.keymap.set("n", "<C-w>x", notification_panel_open, { desc = "Notification Panel" })

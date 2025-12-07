@@ -28,7 +28,7 @@ vim.keymap.set("n", "<leader>fs", function()
         require("snacks.picker").explorer()
 end, { desc = " Snacks Explorer" })
 
-vim.keymap.set("n", "<leader>cc", function()
+vim.keymap.set({ "n", "v" }, "<leader>cc", function()
         require("snacks.picker").commands()
 end, { desc = "Commands" })
 -- Assuming snacks.nvim is already loaded and configured
