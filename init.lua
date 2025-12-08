@@ -55,3 +55,6 @@ require("core.commandLine")
 require("core.move_or_resize")
 require("core.comment")
 require("core.messageBoard")
+
+-- Utility Functions
+require("utils.buffer")
