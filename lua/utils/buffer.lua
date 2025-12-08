@@ -1,3 +1,4 @@
+---@class Buf
 Buf = Buf or {}
 
 -- buffer name only (no path, no extension)
@@ -10,7 +11,9 @@ function Buf.name(buf)
         return vim.fn.fnamemodify(full, ":t:r")
 end
 
--- buffer filetype
+--- use for checking fileTypes
+---@param buf? integer -- Optional Buf no (0 = current Buffer)
+---@return string --- ex "python", "lua"
 function Buf.ft(buf)
         buf = buf or 0
         return vim.bo[buf].filetype or ""
