@@ -7,7 +7,11 @@ return {
                 opts = {
                         legacy_commands = false,
                         ui = {
-                                enable = true,
+                                enable = false,
+                        },
+
+                        completion = {
+                                blink = true,
                         },
                         workspaces = {
                                 {
@@ -15,6 +19,17 @@ return {
                                         path = "~/Projects/obsidianVaults/Wisdom",
                                 },
                         },
+
+                        templates = {
+                                subdir = "templates",
+                                date_format = "%Y-%m-%d",
+                                time_format = "%H:%M:%S",
+                        },
+
+                        picker = {
+                                name = "snacks.pick",
+                        },
+                        notes_subdir = "zettel",
                 },
         },
         -- {
@@ -25,6 +40,20 @@ return {
         --         -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
         --         ---@module 'render-markdown'
         --         ---@type render.md.UserConfig
-        --         opts = {},
+        --         opts = {
+        --
+        --                 latex = {
+        --                         enabled = false,
+        --                 },
+        --         },
         -- },
+        --
+        -- For `plugins/markview.lua` users.
+        {
+                "OXY2DEV/markview.nvim",
+                lazy = false,
+
+                -- Completion for `blink.cmp`
+                -- dependencies = { "saghen/blink.cmp" },
+        },
 }
