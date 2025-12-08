@@ -2,10 +2,33 @@
 
 -- Obsidian Keymaps
 
+vim.keymap.set("n", "<leader>oe", function()
+        local ft = Buf.ft() -- your helper
+
+        local template_map = {
+                lua = "lua",
+                python = "python",
+                javascript = "js",
+                typescript = "ts",
+                markdown = "default",
+        }
+
+        local template = template_map[ft] or "default"
+
+        -- Ask for title
+        local title = vim.fn.input("Note title: ")
+
+        -- Call Obsidian with explicit template
+        vim.cmd(string.format("Obsidian new_from_template %s %s", title, template))
+end, { desc = "New Obsidian note from filetype template" })
+
 vim.keymap.set("n", "<leader>oc", function()
+        vim.cmd("Obsidian new_from_template")
+end, { desc = "Obsidian: New Note From buffer's Current language" })
+
+vim.keymap.set("n", "<leader>oC", function()
         vim.cmd("Obsidian new")
 end, { desc = "Obsidian: Create new note (API)" })
-
 vim.keymap.set("n", "<leader>ob", function()
         vim.cmd("Obsidian quick_switch")
 end, { desc = "Obsidian: quick_switch" })
