@@ -106,6 +106,7 @@ require("lazy").setup({
 
         -- Mini plugins
         { import = "miniPlugins.mini-ai" },
+        { import = "plugins.lazydev" },
         { import = "plugins.cmp" },
 })
 
