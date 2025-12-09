@@ -33,17 +33,17 @@ return { -- Main LSP Configuration
 
                 local servers = {
                         lua_ls = {
-                                root_markers = {
-                                        ".luarc.json",
-                                        ".luarc.jsonc",
-                                        ".luacheckrc",
-                                        ".stylua.toml",
-                                        ".git",
-                                        ".github",
-                                        "stylua.toml",
-                                        "selene.toml",
-                                        "selene.yml",
-                                },
+                                -- root_markers = {
+                                --         ".luarc.json",
+                                --         ".luarc.jsonc",
+                                --         ".luacheckrc",
+                                --         ".stylua.toml",
+                                --         ".git",
+                                --         ".github",
+                                --         "stylua.toml",
+                                --         "selene.toml",
+                                --         "selene.yml",
+                                -- },
                                 -- on_attach = function(client, bufnr)
                                 --         local bufname = vim.api.nvim_buf_get_name(bufnr)
                                 --         -- if bufname:match("Luapad") or bufname:match("luapad.nvim") then
@@ -91,23 +91,27 @@ return { -- Main LSP Configuration
                                 --         end
                                 --         -- Normal attach logic here (if needed)
                                 -- end,
-                                single_file_support = true,
-                                cmd = { "lua-language-server" },
-
-                                settings = {
-                                        Lua = {
-                                                runtime = {
-                                                        version = "LuaJit",
-                                                },
-                                                diagnostics = {
-                                                        globals = { "vim" },
-                                                },
-                                                workspace = {
-                                                        checkThirdParty = false,
-                                                        ignoreDir = { vim.fn.stdpath("data") .. "/lazy" },
-                                                },
-                                        },
-                                },
+                                -- single_file_support = true,
+                                -- cmd = { "lua-language-server" },
+                                --
+                                -- settings = {
+                                --         Lua = {
+                                --                 runtime = {
+                                --                         version = "LuaJit",
+                                --                 },
+                                --                 diagnostics = {
+                                --                         globals = { "vim", "require" },
+                                --                 },
+                                --                 workspace = {
+                                --                         checkThirdParty = false,
+                                --                         library = vim.api.nvim_get_runtime_file("", true),
+                                --                         -- ignoreDir = { vim.fn.stdpath("data") .. "/lazy" },
+                                --                 },
+                                --                 telemetry = {
+                                --                         enable = false,
+                                --                 },
+                                --         },
+                                -- },
                         },
 
                         -- pyright = {
