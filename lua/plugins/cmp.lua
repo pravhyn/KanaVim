@@ -280,7 +280,7 @@ return {
                                 ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
                                 ["<C-e>"] = { "hide", "fallback" },
                         },
-                        fuzzy = { implementation = "prefer_rust_with_warning" },
+                        fuzzy = { implementation = _G.is_termux and "lua" or "prefer_rust_with_warning" },
                         signature = { enabled = true },
                         appearance = {
                                 nerd_font_variant = "mono",
