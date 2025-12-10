@@ -1,7 +1,7 @@
 local selected_picker = "fzf"
 -- 🔍 Live Grep
 vim.keymap.set("n", "<leader>lg", function()
-        require("fzf-lua").live_grep()
+        require("snacks.picker").grep()
 end, { desc = "Live Grep" })
 
 -- 📁 Find Buffers
