@@ -2,6 +2,7 @@
 -- Important
 vim.g.mapleader = " "
 
+vim.g.treesitter_compiler = "clang"
 vim.g.maplocalleader = "," -- Local leader (e.g. <localleader>r for Grug-FAR)
 
 -- To check Env
