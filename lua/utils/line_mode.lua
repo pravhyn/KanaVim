@@ -1,4 +1,4 @@
-vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#FFAA00", bold = true })
+vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#FF00FF", bold = true })
 
 -- vim.api.nvim_create_autocmd("CmdlineEnter", {
 --         callback = function()
