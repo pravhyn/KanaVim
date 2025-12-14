@@ -56,6 +56,7 @@ require("core.commandLine")
 require("core.move_or_resize")
 require("core.comment")
 require("core.messageBoard")
+require("core.rough_board")
 
 -- Experimentation js
 require("node.dom_function_test")
