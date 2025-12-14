@@ -1,8 +1,8 @@
 -- keymap to execute a temporary buffer to paste the commands from ai to run
 local Layout = require("nui.layout")
 local Popup = require("nui.popup")
-local Input = require("nui.input")
-local event = require("nui.utils.autocmd").event
+-- local Input = require("nui.input")
+-- local event = require("nui.utils.autocmd").event
 
 local function command_line_runner()
         local temporary_buffer = Popup({
