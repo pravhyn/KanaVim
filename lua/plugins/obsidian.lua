@@ -2,6 +2,8 @@ return {
         {
                 "obsidian-nvim/obsidian.nvim",
                 version = "*",
+                ft = "markdown",
+                event = { "BufReadPre *.md", "BufNewFile *.md" },
                 ---@module 'obsidian'
                 ---@type obsidian.config
                 opts = {
@@ -42,9 +44,9 @@ return {
         --         ---@type render.md.UserConfig
         --         opts = {
         --
-        --                 latex = {
-        --                         enabled = false,
-        --                 },
+        --                 -- latex = {
+        --                 --         enabled = false,
+        --                 -- },
         --         },
         -- },
         --
