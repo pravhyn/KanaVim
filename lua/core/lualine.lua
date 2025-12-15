@@ -68,7 +68,8 @@ function M.setup()
                 for _, client in ipairs(clients) do
                         table.insert(names, client.name)
                 end
-                return "🚀 " .. table.concat(names, ", ")
+                -- return "🚀 " .. table.concat(names, ", ")
+                return table.concat(names, ", ")
         end
 
         require("lualine").setup({
@@ -81,30 +82,94 @@ function M.setup()
                 sections = {
                         lualine_a = { { "mode", icon = "" } },
                         lualine_b = { "branch", "diff" },
+                        -- lualine_c = {
+                        --         {
+                        --                 "filename",
+                        --                 path = 1, -- relative path
+                        --                 symbols = { modified = "[+]", readonly = "[RO]", unnamed = "[No Name]" },
+                        --         },
+                        --
+                        --         color = function()
+                        --                 -- Check diagnostics in current buffer
+                        --                 local diagnostics = vim.diagnostic.get(0)
+                        --
+                        --                 for _, d in ipairs(diagnostics) do
+                        --                         if d.severity == vim.diagnostic.severity.ERROR then
+                        --                                 return { fg = "#e86671", gui = "bold" }
+                        --                         elseif d.severity == vim.diagnostic.severity.WARN then
+                        --                                 return { fg = "#d19a66", gui = "bold" }
+                        --                         end
+                        --                 end
+                        --
+                        --                 -- Check if buffer is modified
+                        --                 if vim.bo.modified then
+                        --                         return { fg = "#e5c07b", gui = "bold" } -- 🟡 yellow
+                        --                 end
+                        --
+                        --                 return nil -- default lualine color
+                        --         end,
+                        -- },
+
                         lualine_c = {
                                 {
                                         "filename",
                                         path = 1, -- relative path
-                                        symbols = { modified = "[+]", readonly = "[RO]", unnamed = "[No Name]" },
+                                        symbols = {
+                                                modified = "[+]",
+                                                readonly = "[RO]",
+                                                unnamed = "[No Name]",
+                                        },
+
+                                        color = function()
+                                                -- Ignore non-file buffers (optional but recommended)
+                                                if vim.bo.buftype ~= "" then
+                                                        return { fg = "#8be9fd" } -- Dracula cyan
+                                                end
+
+                                                -- Diagnostics first (highest priority)
+                                                local diagnostics = vim.diagnostic.get(0)
+
+                                                for _, d in ipairs(diagnostics) do
+                                                        if d.severity == vim.diagnostic.severity.ERROR then
+                                                                return { fg = "#ff5555", gui = "bold" } -- red
+                                                        elseif d.severity == vim.diagnostic.severity.WARN then
+                                                                return { fg = "#ffb86c", gui = "bold" } -- orange
+                                                        end
+                                                end
+
+                                                -- Modified buffer
+                                                if vim.bo.modified then
+                                                        return { fg = "#f1fa8c", gui = "bold" } -- yellow
+                                                end
+
+                                                -- ✅ Default (clean buffer)
+                                                return { fg = "#50fa7b" } -- green/cyan-ish (Dracula green)
+                                        end,
                                 },
                         },
                         lualine_x = {
                                 previous_buffer_name,
                                 total_buffers,
                                 next_buffer_name,
-                                "encoding",
-                                "fileformat",
-                                "filetype",
+                                -- "encoding",
+                                -- "fileformat",
+                                -- "filetype",
                         },
                         lualine_y = {
                                 {
                                         macro_recording,
                                         color = { fg = "#ff5555", gui = "bold" }, -- Dracula red
                                 },
-                                "progress",
-                                lsp_status,
+                                -- "progress", -- show the progress based on the line number
+                                {
+                                        lsp_status,
+                                        color = { fg = "#e5c07b" },
+                                },
                         },
-                        lualine_z = { { "location", icon = "" } },
+                        lualine_z = {
+                                -- { "location", icon = "" },
+                                { "location" },
+                        },
                 },
                 inactive_sections = {
                         lualine_a = {},
