@@ -1,5 +1,6 @@
 return {
         "folke/snacks.nvim",
+        ---@type snacks.Config
         opts = {
                 notifier = { enabled = true },
                 image = { enabled = true },
@@ -9,9 +10,10 @@ return {
                 input = { enabled = true },
                 quickfile = { enabled = true },
                 statuscolumn = { enabled = true },
+                lazygit = { enabled = true },
 
                 words = { enabled = true },
-                rename = { enabled = false },
+                rename = { enabled = true },
                 zen = { enabled = true },
                 dashboard = {
                         enabled = true,
