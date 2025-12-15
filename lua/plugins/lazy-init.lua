@@ -82,7 +82,7 @@ require("lazy").setup({
         -- { import = "plugins.neogit" },
         { import = "plugins.lualine" },
         { import = "plugins.treesitter-textObjects" },
-        { import = "plugins.bufferline" },
+        -- { import = "plugins.bufferline" },
         { import = "plugins.mini-line" },
         -- Navigations
         { import = "plugins.before" },
