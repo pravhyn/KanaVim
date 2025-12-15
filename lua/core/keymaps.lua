@@ -188,6 +188,8 @@ end, { desc = "Source current Lua file" })
 -- LSP
 vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { desc = "LSP Rename" })
 vim.keymap.set("v", "<leader>la", vim.lsp.buf.code_action, { desc = "LSP Action" })
+vim.keymap.set("n", "gI", vim.lsp.buf.implementation)
+
 -- refractor nvim
 
 vim.keymap.set("v", "<leader>rf", function()
