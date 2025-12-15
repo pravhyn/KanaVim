@@ -2,8 +2,9 @@ return {
         {
                 "obsidian-nvim/obsidian.nvim",
                 version = "*",
-                ft = "markdown",
-                event = { "BufReadPre *.md", "BufNewFile *.md" },
+                -- hat to comment both the line below to make the keymaps work, I guess I'll put the keymaps here
+                -- ft = "markdown",
+                -- event = { "BufReadPre *.md", "BufNewFile *.md" },
                 ---@module 'obsidian'
                 ---@type obsidian.config
                 opts = {
