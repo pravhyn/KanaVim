@@ -21,7 +21,7 @@ require("lazy").setup({
         -- List your plugins here, or require separate files
         -- For WebCodeBases
         { import = "plugins.meow-yarn" },
-        { import = "plugins.arrow-navigation" },
+        -- { import = "plugins.arrow-navigation" },
         -- For webDevelopment
         { import = "plugins.nvim-html-css" },
         { import = "plugins.autoclose-tag" },
@@ -54,6 +54,7 @@ require("lazy").setup({
         -- { import = "plugins.catppuccin"},
         -- { import = "dashboard.dashboard" },
         { import = "plugins.snacks" },
+        { import = "plugins.trouble" },
         { import = "plugins.nvim-bqf" },
         -- { import = "plugins.notify" },
         -- For LSP Managements
@@ -92,6 +93,7 @@ require("lazy").setup({
         { import = "plugins.precognition" },
         -- { import = "plugins.helpers_plugin"}
         { import = "plugins.text-objets" },
+        { import = "plugins.nvim-rip-substitute" },
 
         -- { import = "plugins.indent-blankline" },
         -- { import = "plugins.none" },
