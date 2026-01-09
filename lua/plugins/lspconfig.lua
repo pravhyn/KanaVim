@@ -141,7 +141,7 @@ return { -- Main LSP Configuration
                         -- vim.lsp.enable(server)
                 end
                 require("mason-lspconfig").setup({
-                        ensure_installed = { "lua_ls" },
+                        ensure_installed = { "lua_ls", "basedpyright", "jedi_language_server" },
                 })
 
                 -- actually apply configs
