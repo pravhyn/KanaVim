@@ -57,6 +57,7 @@ require("core.move_or_resize")
 require("core.comment")
 require("core.messageBoard")
 require("core.rough_board")
+require("core.caseConversion")
 
 -- Experimentation js
 require("node.dom_function_test")
@@ -64,3 +65,6 @@ require("node.dom_function_test")
 -- Utility Functions
 require("utils.buffer")
 require("utils.code")
+
+--experimentation picker
+require("picker.picker")
