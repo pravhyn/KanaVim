@@ -26,6 +26,16 @@ end, {})
 --         end,
 -- })
 
+vim.api.nvim_create_autocmd("FileType", {
+        pattern = "python",
+        callback = function()
+                vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+                        focusable = false,
+                        border = "rounded",
+                })
+        end,
+})
+
 local function augroup(name)
         return vim.api.nvim_create_augroup("my_" .. name, { clear = true })
 end
