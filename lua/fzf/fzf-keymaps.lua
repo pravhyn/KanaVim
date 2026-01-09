@@ -6,7 +6,7 @@ end, { desc = "Live Grep" })
 
 -- 📁 Find Buffers
 vim.keymap.set("n", "<leader>fb", function()
-        require("fzf-lua").buffers()
+        require("snacks.picker").buffers()
 end, { desc = "Find Buffers" })
 
 -- 🕘 Find Recent Files
@@ -14,9 +14,14 @@ vim.keymap.set("n", "<leader>fr", function()
         require("fzf-lua").oldfiles()
 end, { desc = "Find Recent Files" })
 
+-- Find workspace symbols
+vim.keymap.set("n", "<leader>fw", function()
+        require("snacks.picker").lsp_workspace_symbols()
+end, { desc = "workspace symbols" })
+
 -- 📋 Find Registers
 vim.keymap.set("n", "<leader>rg", function()
-        require("fzf-lua").registers()
+        require("snacks.picker").registers()
 end, { desc = "Find Registers" })
 
 -- 🧠 Help Tags
