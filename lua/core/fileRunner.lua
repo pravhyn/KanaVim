@@ -2,15 +2,34 @@ vim.keymap.set("n", "<leader>run", function()
         local file = vim.api.nvim_buf_get_name(0)
 
         if file == "" then
-                require("snacks").notify("No file to run", "warn")
+                require("snacks").notify("No file to run", {
+                        level = vim.log.levels.WARN,
+                })
+                return
+        end
+
+        local ext = vim.fn.fnamemodify(file, ":e")
+
+        -- Decide runner
+        local cmd
+        local title
+
+        if ext == "py" then
+                cmd = { "python", file }
+                title = "Python Output"
+        elseif ext == "js" then
+                cmd = { "node", file }
+                title = "Node.js Output"
+        else
+                require("snacks").notify("Unsupported file type: " .. ext, "warn")
                 return
         end
 
         local start = vim.uv.hrtime()
-        local finished = false -- ✅ track completion
+        local finished = false
         local job
 
-        job = vim.system({ "python", file }, { text = true }, function(res)
+        job = vim.system(cmd, { text = true }, function(res)
                 if finished then
                         return
                 end
@@ -23,7 +42,7 @@ vim.keymap.set("n", "<leader>run", function()
                 local msg = string.format("%s\n\n⏱ Took %.3f seconds", output, duration)
 
                 require("snacks").notify(msg, {
-                        title = "Python Output",
+                        title = title,
                 })
         end)
 
@@ -31,7 +50,9 @@ vim.keymap.set("n", "<leader>run", function()
                 if job and job.pid and not finished then
                         finished = true
                         job:kill(15)
-                        require("snacks").notify("⛔ Python program killed (took > 10s)", "warn")
+                        require("snacks").notify("⛔ Program killed (took > 10s)", {
+                                level = vim.log.levels.WARN,
+                        })
                 end
         end, 10000)
-end, { desc = "Run Python file and notify output" })
+end, { desc = "Run current file (Python / JS) and notify output" })
