@@ -207,7 +207,76 @@ end, { desc = "Source current Lua file" })
 vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { desc = "LSP Rename" })
 vim.keymap.set("v", "<leader>la", vim.lsp.buf.code_action, { desc = "LSP Action" })
 vim.keymap.set("n", "gI", vim.lsp.buf.implementation)
+-- vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = true })
 
+local function smart_python_hover()
+        local clients = vim.lsp.get_clients({ bufnr = 0 })
+
+        for _, client in ipairs(clients) do
+                if client.name == "jedi_language_server" then
+                        vim.lsp.buf.hover({
+                                filter = function(c)
+                                        return c.name == "jedi_language_server"
+                                end,
+                        })
+                        return
+                end
+        end
+
+        -- fallback to pyright
+        vim.lsp.buf.hover({
+                filter = function(c)
+                        return c.name == "basedpyright"
+                end,
+        })
+end
+
+vim.api.nvim_create_autocmd("FileType", {
+        pattern = "python",
+        callback = function(ev)
+                vim.keymap.set("n", "K", smart_python_hover, { buffer = ev.buf })
+        end,
+})
+
+-- local function jedi_hover()
+--         vim.lsp.buf.hover({
+--                 filter = function(client)
+--                         return client.name == "jedi_language_server"
+--                 end,
+--         })
+-- end
+--
+-- vim.api.nvim_create_autocmd("FileType", {
+--         pattern = "python",
+--         callback = function(ev)
+--                 vim.keymap.set("n", "K", jedi_hover, { buffer = ev.buf })
+--         end,
+-- })
+
+-- local function pyright_hover()
+--         vim.lsp.buf.hover({
+--                 filter = function(client)
+--                         return client.name == "basedpyright"
+--                 end,
+--         })
+-- end
+--
+-- vim.api.nvim_create_autocmd("FileType", {
+--         pattern = "python",
+--         callback = function(ev)
+--                 vim.keymap.set("n", "K", pyright_hover, { buffer = ev.buf, silent = true })
+--         end,
+-- })
+
+-- vim.keymap.set("n", "K", function()
+--   local clients = vim.lsp.get_clients({ bufnr = 0 })
+--   if #clients > 0 then
+--     vim.lsp.buf.hover()
+--   else
+--     vim.cmd("normal! K")
+--   end
+-- end, { desc = "Hover (LSP or fallback)" })
+--
 -- smartActions
 
 ---@diagnostic disable-next-line: undefined-global
