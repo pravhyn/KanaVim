@@ -43,6 +43,24 @@ vim.keymap.set({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { desc = "Do
 vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
 vim.keymap.set({ "n", "x" }, "<Up>", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
 
+vim.keymap.set("n", "<leader>ug", function()
+        local win = vim.api.nvim_get_current_win()
+
+        local number = vim.wo[win].number
+        local relativenumber = vim.wo[win].relativenumber
+        local signcolumn = vim.wo[win].signcolumn
+
+        if number or relativenumber or signcolumn ~= "no" then
+                vim.wo[win].number = false
+                vim.wo[win].relativenumber = false
+                vim.wo[win].signcolumn = "no"
+        else
+                vim.wo[win].number = true
+                vim.wo[win].relativenumber = true
+                vim.wo[win].signcolumn = "yes"
+        end
+end, { desc = "Toggle gutter (numbers + signs)" })
+
 -- buffers
 vim.keymap.set("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Prev Buffer" })
 vim.keymap.set("n", "<S-l>", "<cmd>bnext<cr>", { desc = "Next Buffer" })
@@ -190,8 +208,102 @@ vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { desc = "LSP Rename" })
 vim.keymap.set("v", "<leader>la", vim.lsp.buf.code_action, { desc = "LSP Action" })
 vim.keymap.set("n", "gI", vim.lsp.buf.implementation)
 
--- refractor nvim
+-- smartActions
 
+---@diagnostic disable-next-line: undefined-global
+local last_created_word = last_created_word or ""
+
+vim.api.nvim_create_autocmd("InsertLeave", {
+        callback = function()
+                local word = vim.fn.expand("<cword>")
+                if word and word ~= "" then
+                        last_created_word = word
+                end
+        end,
+})
+vim.keymap.set("n", "<leader>gw", function()
+        local word = last_created_word
+        if word == "" then
+                vim.notify("No word remembered yet", vim.log.levels.WARN)
+                return
+        end
+
+        local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+        local line = vim.api.nvim_get_current_line()
+        local char = line:sub(col + 1, col + 1)
+
+        -- keyword characters: letters, numbers, underscore
+        if char:match("[%w_]") then
+                -- replace word
+                vim.cmd("normal! ciw" .. word)
+        else
+                -- insert at cursor
+                vim.cmd("normal! i" .. word)
+        end
+end, {
+        desc = "Replace word or insert last created identifier",
+})
+
+---@diagnostic disable-next-line: undefined-global
+local last_typed_word = local_typed_word or ""
+vim.api.nvim_create_autocmd("TextChangedI", {
+        callback = function()
+                local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+                local line = vim.api.nvim_get_current_line()
+
+                if col == 0 then
+                        return
+                end
+
+                local prev = line:sub(col, col)
+                local curr = line:sub(col + 1, col + 1)
+
+                -- word just finished
+                if prev:match("[%w_]") and not curr:match("[%w_]") then
+                        local word = vim.fn.expand("<cword>")
+                        if word ~= "" then
+                                last_typed_word = word
+                        end
+                end
+        end,
+})
+
+-- vim.keymap.set("i", "<C-g>w", function()
+--   if last_typed_word == "" then return end
+--   vim.api.nvim_put({ last_typed_word }, "c", true, true)
+-- end, {
+--   desc = "Insert last typed word",
+-- })
+
+vim.keymap.set("i", "<C-g>q", function()
+        if last_created_word == "" then
+                return
+        end
+        vim.api.nvim_put({ last_created_word }, "c", true, true)
+end, {
+        desc = "Insert last created identifier",
+})
+
+_G.last_word_operator = function(type)
+        if last_created_word == "" then
+                return
+        end
+
+        -- apply change operator to the motion
+        if type == "char" then
+                vim.cmd("normal! c" .. last_created_word)
+        elseif type == "line" then
+                vim.cmd("normal! c" .. last_created_word)
+        elseif type == "block" then
+                vim.notify("Block mode not supported", vim.log.levels.WARN)
+        end
+end
+
+vim.keymap.set("n", "gw", function()
+        vim.o.operatorfunc = "v:lua.last_word_operator"
+        return "g@"
+end, { expr = true, desc = "Replace motion with remembered identifier" })
+-- refractor nvim
 vim.keymap.set("v", "<leader>rf", function()
         require("refactoring").select_refactor()
 end, { desc = "Refactor (select)" })
@@ -304,6 +416,18 @@ vim.keymap.set("v", "<leader>xr", function()
         vim.cmd(cmd)
 end, { desc = "Execute selected text as command" })
 
+vim.keymap.set({ "n", "x" }, "<leader>rs", function()
+        require("rip-substitute").sub()
+end, { desc = " rip substitute" })
+
+vim.keymap.set("v", "<leader>jl", function()
+        -- remove newlines
+        vim.cmd("'<,'>s/\\n/ /g")
+        -- collapse multiple spaces into one
+        vim.cmd("'<,'>s/\\s\\+/ /g")
+end, { desc = "Join lines & clean spaces" })
+
+-- vim.keymap.set("n", "yy", '"0yy', { noremap = true, silent = true })
 -- Lua
 -- vim.keymap.set("n", "x", require("substitute").operator, { noremap = true }) -- like yi{ then xi{
 -- vim.keymap.set("n", "xl", require("substitute").line, { noremap = true }) -- after yanking line, then xl
