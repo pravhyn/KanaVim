@@ -11,6 +11,7 @@ local function open_url(url)
                 vim.fn.jobstart(cmd, { detach = true })
         end
 end
+
 local function run_and_parse(cmd)
         local output = vim.fn.systemlist(cmd .. " 2>&1")
         local qf = {}
@@ -35,8 +36,21 @@ local function run_and_parse(cmd)
         else
                 vim.notify("Command succeeded: " .. cmd, vim.log.levels.INFO)
                 -- Open the reload.extensions URL
-                vim.fn.jobstart({ "curl", "-s", "http://reload.extensions" }, { detach = true })
+                -- vim.fn.jobstart(
+                --         { "curl", "-s", "http://reload.extensions" }
+                --         -- ,{ detach = true }
+                -- )
+
+                vim.fn.jobstart({
+                        "cmd.exe",
+                        "/c",
+                        "start",
+                        "",
+                        "http://reload.extensions",
+                }, { detach = true })
         end
+
+        vim.print(table.concat(output, "\n"))
 end
 
 -- E5108: Error executing lua: Vim:E475: Invalid value for argument cmd: 'start' is not executable
