@@ -65,12 +65,6 @@ local function floatingBuffer()
                         -- Deleted detected
                         if last > new_last then
 
-
-
-
-
-
-
                                 -- local new_notif = table.concat(notifications, ",")
                                 -- vim.notify(new_notif)
                         end
@@ -82,4 +76,4 @@ local function floatingBuffer()
         })
 end
 
-vim.keymap.set("n", "<leader>bdd", floatingBuffer)
+-- vim.keymap.set("n", "<leader>bdd", floatingBuffer)
