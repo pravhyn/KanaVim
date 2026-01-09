@@ -36,7 +36,12 @@ return {
                 end,
         },
 
-        { "nvim-mini/mini.pairs", version = false },
+        {
+                "nvim-mini/mini.pairs",
+                version = false,
+
+                modes = { insert = true, command = false, terminal = false },
+        },
         { "nvim-mini/mini.comment", version = false },
         {
                 "nvim-mini/mini.surround",
@@ -44,7 +49,7 @@ return {
                 config = function()
                         require("mini.surround").setup({
                                 mappings = {
-                                        add = "ys", -- Add surrounding
+                                        add = "gs", -- Add surrounding Note: ys is a terrible idea, ruins y experience
                                         delete = "ds", -- Delete surrounding
                                         find = "<leader>sf", -- Find surrounding (right)
                                         find_left = "<leader>sF", -- Find surrounding (left)
