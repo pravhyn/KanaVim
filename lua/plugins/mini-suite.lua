@@ -68,8 +68,22 @@ return {
                         require("mini.operators").setup({})
                 end,
         },
-        { "nvim-mini/mini.splitjoin", version = false },
-        { "nvim-mini/mini.align", version = false },
+        {
+                "nvim-mini/mini.splitjoin",
+                version = false,
+
+                config = function()
+                        require("mini.splitjoin").setup()
+                end,
+        },
+        {
+                "nvim-mini/mini.align",
+                version = false,
+
+                config = function()
+                        require("mini.align").setup()
+                end,
+        },
         {
                 "nvim-mini/mini.test",
                 version = false,
