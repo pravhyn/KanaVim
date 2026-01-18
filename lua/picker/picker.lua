@@ -5,8 +5,11 @@ local Popup = require("nui.popup")
 -- Function: Search using Everything CLI (es.exe)
 -- Input: query (string)
 -- Output: results as table (each line = one path)
+-- TODO: return edited path based on language of the buffer
+-- TODO: return dir parent of the file instead of the file's path
+-- FIX: File explorer option doesn't work
 
-local function everything()
+local function everything(picker)
         local result_box = Popup({
                 enter = true,
                 border = {
@@ -36,17 +39,18 @@ local function everything()
 
         --- returns absolute path as string
         ---@param path string accepts absolute path strings, and opens the file as buffer
-        local function notify_path(path)
+        local function yank_path(path)
                 if not path or path == "" then
                         return
                 end
 
                 path = path:gsub("\r", "")
                 path = vim.fn.fnamemodify(path, ":p")
+                vim.fn.setreg('"', path)
 
-                vim.notify(path, vim.log.levels.INFO, {
-                        title = "Selected path",
-                })
+                -- vim.notify(path, vim.log.levels.INFO, {
+                --         title = "Selected path",
+                -- }
         end
 
         --- opens the file in file explorer
@@ -157,7 +161,10 @@ local function everything()
                 results = search_everything_fzf(value)
 
                 vim.schedule(function()
-                        vim.api.nvim_buf_set_lines(result_box.bufnr, 0, -1, false, results)
+                        -- FIX: result_box.bufnr gets destroyed on submit, and below code gives the error
+                        if vim.api.nvim_buf_is_valid(result_box.bufnr) then
+                                vim.api.nvim_buf_set_lines(result_box.bufnr, 0, -1, false, results)
+                        end
                 end)
         end, 300)
         local input_box = Input({
@@ -181,7 +188,13 @@ local function everything()
                 end,
 
                 on_submit = function(value)
-                        open_path(results[1])
+                        if picker == "buffer" then
+                                open_path(results[1])
+                        elseif picker == "yank" then
+                                yank_path(results[1])
+                        elseif picker == "file" then
+                                open_in_file_explorer(results[1])
+                        end
                 end,
                 on_close = function()
                         print("Input Closed")
@@ -211,5 +224,13 @@ local function everything()
         end, { noremap = true })
 end
 vim.keymap.set("n", "<leader>fe", function()
-        everything()
-end)
+        everything("buffer")
+end, { desc = "search everything" })
+
+vim.api.nvim_create_user_command("Yankpath", function()
+        everything("yank")
+end, { desc = "Yanks the path" })
+
+vim.api.nvim_create_user_command("OpenInFileExplorer", function()
+        everything("file")
+end, { desc = "Open FileExplorer" })
