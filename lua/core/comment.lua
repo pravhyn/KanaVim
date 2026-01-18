@@ -10,19 +10,23 @@ vim.keymap.set("n", "<C-g>k", function()
 end, { silent = true })
 
 vim.keymap.set("i", ";;", function()
-        local col = vim.fn.col(".") - 1
+        local col = vim.fn.col(".") -- 1-based
         local line = vim.fn.getline(".")
-        local before = line:sub(col - 1, col) or ""
 
-        -- Only expand if the char before ;; is whitespace or start of line
-        if col == 1 or before:match("%s") then
+        -- character before cursor
+        local prev = col > 1 and line:sub(col - 1, col - 1) or ""
+
+        -- Only expand at start or after whitespace
+        if col == 1 or prev:match("%s") then
                 local cs = vim.bo.commentstring
-                if cs == "" then
+                if not cs or cs == "" then
                         return ";;"
                 end
-                local left = cs:match("^(.-)%%s") or cs
-                return " " .. left .. " "
-        else
-                return ";;"
+
+                -- extract comment leader
+                local leader = cs:match("^(.-)%s*%%s") or cs
+                return leader .. " "
         end
+
+        return ";;"
 end, { expr = true, desc = "Universal inline comment with safety" })
