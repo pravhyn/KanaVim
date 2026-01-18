@@ -106,6 +106,14 @@ local function project_root()
         return vim.loop.cwd()
 end
 
+local function current_file_parent()
+        local bufname = vim.api.nvim_buf_get_name(0)
+        if bufname == "" then
+                return vim.loop.cwd() -- fallback if buffer has no file
+        end
+        return vim.fn.fnamemodify(bufname, ":h")
+end
+
 -- floating terminal
 vim.keymap.set("n", "<leader>fT", function()
         Snacks.terminal()
