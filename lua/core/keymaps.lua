@@ -322,6 +322,21 @@ Snacks.keymap.set(
 ---@diagnostic disable-next-line: undefined-global
 local last_created_word = last_created_word or ""
 
+-- create a highlight group
+local ns = vim.api.nvim_create_namespace("last_created_word")
+
+vim.api.nvim_set_hl(0, "LastCreatedWord", {
+        fg = "#ff79c6",
+        bg = "#2a2a37",
+        bold = true,
+})
+
+vim.api.nvim_set_hl(0, "LastCreatedWordAlt", {
+        fg = "#7dcfff", -- icy blue / teal
+        bg = "#1f2a33", -- dark blue-gray
+        bold = true,
+})
+
 vim.api.nvim_create_autocmd("InsertLeave", {
         callback = function()
                 local word = vim.fn.expand("<cword>")
