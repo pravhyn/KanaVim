@@ -337,6 +337,34 @@ vim.api.nvim_set_hl(0, "LastCreatedWordAlt", {
         bold = true,
 })
 
+local function highlight_word(color_group, word)
+        if word == nil then
+                return
+        end
+        local bufnr = vim.api.nvim_get_current_buf()
+
+        -- clear previous highlight (only once rule)
+        vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
+
+        -- cursor position (1-based row, 0-based col)
+        local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+        row = row - 1
+
+        -- calculate word start column
+        local start_col = col - #word + 1
+        if start_col < 0 then
+                return
+        end
+
+        vim.api.nvim_buf_add_highlight(
+                bufnr,
+                ns,
+                "LastCreatedWord", -- or your custom hl group
+                row,
+                start_col,
+                start_col + #word
+        )
+end
 vim.api.nvim_create_autocmd("InsertLeave", {
         callback = function()
                 local word = vim.fn.expand("<cword>")
