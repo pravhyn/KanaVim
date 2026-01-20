@@ -220,6 +220,11 @@ vim.keymap.set("n", "lt", vim.lsp.buf.type_definition, { desc = "LSP type_defini
 vim.keymap.set("n", "gd", vim.lsp.buf.definition, {
         desc = "Go to definition",
 })
+
+vim.keymap.set("n", "<leader>ts", function()
+        require("symbol-usage").toggle()
+end, { desc = "Description" })
+
 -- vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = true })
 
 local function smart_python_hover()
