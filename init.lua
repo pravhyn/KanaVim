@@ -10,6 +10,13 @@ _G.is_termux = vim.fn.executable("termux-info") == 1 and vim.fn.getenv("PREFIX")
 -- print("Termux detected:", is_termux)
 -- Load core configuration
 
+if vim.fn.has("win32") == 1 then
+        vim.opt.shell = "pwsh"
+        vim.opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
+        vim.opt.shellquote = ""
+        vim.opt.shellxquote = ""
+end
+
 -- Load shit idk what even is
 -- Add your plugin path to runtime during dev
 -- Formatters
@@ -58,6 +65,8 @@ require("core.comment")
 require("core.messageBoard")
 require("core.rough_board")
 require("core.caseConversion")
+require("core.trace_view")
+require("core.cycle_floats")
 
 -- Experimentation js
 require("node.dom_function_test")
@@ -65,6 +74,7 @@ require("node.dom_function_test")
 -- Utility Functions
 require("utils.buffer")
 require("utils.code")
+require("utils.git-fn")
 
 --experimentation picker
 require("picker.picker")
