@@ -649,6 +649,32 @@ vim.keymap.set("n", "<leader>jv", function()
         end
 end, { desc = "Jump to values initializer (this/self)" })
 
+local function kill_everything_and_quit()
+        -- 1. Stop all LSP clients
+        for _, client in pairs(vim.lsp.get_clients()) do
+                client.stop(true)
+        end
+
+        -- 2. Stop all active jobs
+        local jobs = vim.fn.jobwait({}, 0) -- forces job table init
+        for _, job in ipairs(vim.fn.joblist() or {}) do
+                pcall(vim.fn.jobstop, job)
+        end
+
+        -- 3. Delete all terminal buffers (hidden or not)
+        for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+                if vim.bo[buf].buftype == "terminal" then
+                        pcall(vim.api.nvim_buf_delete, buf, { force = true })
+                end
+        end
+
+        -- 4. Quit everything
+        vim.cmd("wqa")
+end
+
+vim.keymap.set("n", "<leader>qw", kill_everything_and_quit, {
+        desc = "Kill all jobs + LSP + terminals, then wqa",
+})
 -- vim.keymap.set("n", "yy", '"0yy', { noremap = true, silent = true })
 -- Lua
 -- vim.keymap.set("n", "x", require("substitute").operator, { noremap = true }) -- like yi{ then xi{
