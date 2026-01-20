@@ -370,6 +370,8 @@ vim.api.nvim_create_autocmd("InsertLeave", {
                 local word = vim.fn.expand("<cword>")
                 if word and word ~= "" then
                         last_created_word = word
+                        -- vim.notify(last_created_word)
+                        highlight_word("LastCreatedWord")
                 end
         end,
 })
@@ -413,6 +415,7 @@ vim.api.nvim_create_autocmd("TextChangedI", {
                 -- word just finished
                 if prev:match("[%w_]") and not curr:match("[%w_]") then
                         local word = vim.fn.expand("<cword>")
+                                highlight_word("LastCreatedWordAlt", word)
                         if word ~= "" then
                                 last_typed_word = word
                         end
