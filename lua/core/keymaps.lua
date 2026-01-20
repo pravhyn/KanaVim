@@ -620,6 +620,9 @@ end
 vim.keymap.set("n", "<leader>wm", function()
         win_toggle.toggle()
 end, { desc = "Toggle maximize window" })
+
+vim.keymap.set("n", "gt", tab_next_or_new, { desc = "Next tab or new tab if only one" })
+vim.keymap.set("n", "gT", tab_prev_or_new, { desc = "Prev tab or new tab if only one" })
 -- vim.keymap.set("n", "yy", '"0yy', { noremap = true, silent = true })
 -- Lua
 -- vim.keymap.set("n", "x", require("substitute").operator, { noremap = true }) -- like yi{ then xi{
