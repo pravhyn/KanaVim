@@ -239,12 +239,20 @@ local function smart_python_hover()
         })
 end
 
-vim.api.nvim_create_autocmd("FileType", {
-        pattern = "python",
-        callback = function(ev)
-                vim.keymap.set("n", "K", smart_python_hover, { buffer = ev.buf })
-        end,
-})
+-- vim.api.nvim_create_autocmd("FileType", {
+--         pattern = "python",
+--         callback = function(ev)
+--                 vim.keymap.set("n", "K", smart_python_hover, { buffer = ev.buf })
+--         end,
+-- })
+
+Snacks.keymap.set("n", "K", smart_python_hover, { ft = { "python" }, desc = "python hover" })
+Snacks.keymap.set(
+        "n",
+        "<leader>gI",
+        vim.lsp.buf.type_definition,
+        { ft = { "python" }, desc = "Pyright: Go to implementation" }
+)
 
 -- local function jedi_hover()
 --         vim.lsp.buf.hover({
