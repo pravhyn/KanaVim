@@ -81,7 +81,7 @@ vim.keymap.set("n", "<S-l>", "<cmd>bnext<cr>", { desc = "Next Buffer" })
 vim.keymap.set("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev Buffer" })
 vim.keymap.set("n", "]b", "<cmd>bnext<cr>", { desc = "Next Buffer" })
 vim.keymap.set("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
-vim.keymap.set("n", "<leader>`", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
+-- vim.keymap.set("n", "<leader>`", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
 vim.keymap.set("n", "<leader>bd", function()
         Snacks.bufdelete()
 end, { desc = "Delete Buffer" })
@@ -365,6 +365,7 @@ local function highlight_word(color_group, word)
                 start_col + #word
         )
 end
+
 vim.api.nvim_create_autocmd("InsertLeave", {
         callback = function()
                 local word = vim.fn.expand("<cword>")
@@ -415,9 +416,9 @@ vim.api.nvim_create_autocmd("TextChangedI", {
                 -- word just finished
                 if prev:match("[%w_]") and not curr:match("[%w_]") then
                         local word = vim.fn.expand("<cword>")
-                                highlight_word("LastCreatedWordAlt", word)
                         if word ~= "" then
                                 last_typed_word = word
+                                highlight_word("LastCreatedWordAlt", word)
                         end
                 end
         end,
@@ -582,8 +583,6 @@ vim.keymap.set("v", "<leader>jl", function()
         vim.cmd("'<,'>s/\\s\\+/ /g")
 end, { desc = "Join lines & clean spaces" })
 
-vim.keymap.set("n", "gt", tab_next_or_new, { desc = "Next tab or new tab if only one" })
-vim.keymap.set("n", "gT", tab_prev_or_new, { desc = "Prev tab or new tab if only one" })
 local function tab_next_or_new()
         if vim.fn.tabpagenr("$") == 1 then
                 vim.cmd("tabnew")
