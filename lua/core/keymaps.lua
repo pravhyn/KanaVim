@@ -623,6 +623,32 @@ end, { desc = "Toggle maximize window" })
 
 vim.keymap.set("n", "gt", tab_next_or_new, { desc = "Next tab or new tab if only one" })
 vim.keymap.set("n", "gT", tab_prev_or_new, { desc = "Prev tab or new tab if only one" })
+vim.keymap.set("n", "<leader>jv", function()
+        local ft = vim.bo.filetype
+
+        local patterns = {
+                javascript = "this%.values%s*=",
+                javascriptreact = "this%.values%s*=",
+                typescript = "this%.values%s*=",
+                typescriptreact = "this%.values%s*=",
+                python = "self%.values%s*=",
+        }
+
+        local pat = patterns[ft]
+        if not pat then
+                vim.notify("No jump rule for filetype: " .. ft, vim.log.levels.WARN)
+                return
+        end
+
+        -- Start search from top of file
+        vim.fn.cursor(1, 1)
+
+        local found = vim.fn.search(pat, "W")
+        if found == 0 then
+                vim.notify("values initializer not found", vim.log.levels.INFO)
+        end
+end, { desc = "Jump to values initializer (this/self)" })
+
 -- vim.keymap.set("n", "yy", '"0yy', { noremap = true, silent = true })
 -- Lua
 -- vim.keymap.set("n", "x", require("substitute").operator, { noremap = true }) -- like yi{ then xi{
