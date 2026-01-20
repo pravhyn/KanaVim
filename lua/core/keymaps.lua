@@ -599,6 +599,27 @@ local function tab_prev_or_new()
                 vim.cmd("tabprevious")
         end
 end
+
+-- Window maximize / restore toggle
+local win_toggle = {
+        saved_layout = nil,
+}
+
+function win_toggle.toggle()
+        if win_toggle.saved_layout then
+                -- Restore previous layout
+                vim.cmd(win_toggle.saved_layout)
+                win_toggle.saved_layout = nil
+        else
+                -- Save current layout and maximize
+                win_toggle.saved_layout = vim.fn.winrestcmd()
+                vim.cmd("only")
+        end
+end
+
+vim.keymap.set("n", "<leader>wm", function()
+        win_toggle.toggle()
+end, { desc = "Toggle maximize window" })
 -- vim.keymap.set("n", "yy", '"0yy', { noremap = true, silent = true })
 -- Lua
 -- vim.keymap.set("n", "x", require("substitute").operator, { noremap = true }) -- like yi{ then xi{
