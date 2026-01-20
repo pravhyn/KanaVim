@@ -214,7 +214,12 @@ end, { desc = "Source current Lua file" })
 -- LSP
 vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { desc = "LSP Rename" })
 vim.keymap.set("v", "<leader>la", vim.lsp.buf.code_action, { desc = "LSP Action" })
-vim.keymap.set("n", "gI", vim.lsp.buf.implementation)
+vim.keymap.set("n", "gI", vim.lsp.buf.implementation, { desc = "LSP implementation" })
+vim.keymap.set("n", "lr", vim.lsp.buf.references, { desc = "LSP refrence" })
+vim.keymap.set("n", "lt", vim.lsp.buf.type_definition, { desc = "LSP type_definition" })
+vim.keymap.set("n", "gd", vim.lsp.buf.definition, {
+        desc = "Go to definition",
+})
 -- vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = true })
 
 local function smart_python_hover()
