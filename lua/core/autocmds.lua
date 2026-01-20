@@ -174,3 +174,52 @@ vim.api.nvim_create_user_command("LspStopSelect", function()
         end)
 end, {})
 
+local function open_term(shell, cwd, cmd)
+        vim.cmd("botright split")
+        vim.cmd("enew") -- new empty buffer
+        vim.cmd("resize 15")
+
+        vim.fn.termopen(shell, {
+                cwd = cwd,
+                on_exit = function(_, code)
+                        vim.notify(("Process exited (%s)"):format(code), vim.log.levels.INFO)
+                end,
+        })
+
+        -- send command after terminal starts
+        vim.defer_fn(function()
+                vim.fn.chansend(vim.b.terminal_job_id, cmd .. "\r")
+        end, 100)
+end
+local function run()
+        local config = dofile(vim.fn.getcwd() .. "/runbook.lua")
+
+        if not config then
+                vim.notify("no config exists")
+                return
+        end
+
+        local shell = config.shell or "pwsh"
+        local wait = (config.wait or 10) * 1000
+
+        local i = 1
+        local function next_step()
+                local step = config.steps[i]
+                if not step then
+                        return
+                end
+
+                open_term(shell, step.cwd, step.cmd)
+                i = i + 1
+
+                if config.steps[i] then
+                        vim.defer_fn(next_step, wait)
+                end
+        end
+
+        next_step()
+end
+
+vim.api.nvim_create_user_command("RunConfig", function()
+        run()
+end, { desc = "Run Config" })
