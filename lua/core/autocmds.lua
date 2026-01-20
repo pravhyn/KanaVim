@@ -149,3 +149,28 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
                 vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
         end,
 })
+
+vim.api.nvim_create_user_command("LspStopSelect", function()
+        local bufnr = vim.api.nvim_get_current_buf()
+        local clients = vim.lsp.get_clients({ bufnr = bufnr })
+
+        if #clients == 0 then
+                vim.notify("No LSP clients attached to this buffer", vim.log.levels.INFO)
+                return
+        end
+
+        vim.ui.select(clients, {
+                prompt = "Stop which LSP?",
+                format_item = function(client)
+                        return client.name
+                end,
+        }, function(choice)
+                if not choice then
+                        return
+                end
+
+                vim.lsp.stop_client(choice.id)
+                vim.notify("Stopped LSP: " .. choice.name)
+        end)
+end, {})
+
