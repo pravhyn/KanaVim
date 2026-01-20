@@ -43,23 +43,37 @@ vim.keymap.set({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { desc = "Do
 vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
 vim.keymap.set({ "n", "x" }, "<Up>", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
 
+-- vim.keymap.set("n", "<leader>ug", function()
+--         local win = vim.api.nvim_get_current_win()
+--
+--         local number = vim.wo[win].number
+--         local relativenumber = vim.wo[win].relativenumber
+--         local signcolumn = vim.wo[win].signcolumn
+--
+--         if number or relativenumber or signcolumn ~= "no" then
+--                 vim.wo[win].number = false
+--                 vim.wo[win].relativenumber = false
+--                 vim.wo[win].signcolumn = "no"
+--         else
+--                 vim.wo[win].number = true
+--                 vim.wo[win].relativenumber = true
+--                 vim.wo[win].signcolumn = "yes"
+--         end
+-- end, { desc = "Toggle gutter (numbers + signs)" })
+
 vim.keymap.set("n", "<leader>ug", function()
-        local win = vim.api.nvim_get_current_win()
+        local wins = vim.api.nvim_list_wins()
 
-        local number = vim.wo[win].number
-        local relativenumber = vim.wo[win].relativenumber
-        local signcolumn = vim.wo[win].signcolumn
+        -- decide toggle state from current window
+        local cur = vim.api.nvim_get_current_win()
+        local enable = not (vim.wo[cur].number or vim.wo[cur].relativenumber or vim.wo[cur].signcolumn ~= "no")
 
-        if number or relativenumber or signcolumn ~= "no" then
-                vim.wo[win].number = false
-                vim.wo[win].relativenumber = false
-                vim.wo[win].signcolumn = "no"
-        else
-                vim.wo[win].number = true
-                vim.wo[win].relativenumber = true
-                vim.wo[win].signcolumn = "yes"
+        for _, win in ipairs(wins) do
+                vim.wo[win].number = enable
+                vim.wo[win].relativenumber = enable
+                vim.wo[win].signcolumn = enable and "yes" or "no"
         end
-end, { desc = "Toggle gutter (numbers + signs)" })
+end, { desc = "Toggle gutter (all windows)" })
 
 -- buffers
 vim.keymap.set("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Prev Buffer" })
