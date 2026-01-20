@@ -115,11 +115,11 @@ local function current_file_parent()
 end
 
 -- floating terminal
-vim.keymap.set("n", "<leader>fT", function()
-        Snacks.terminal()
-end, { desc = "Terminal (cwd)" })
+-- vim.keymap.set("n", "<leader>ft", function()
+--         Snacks.terminal()
+-- end, { desc = "Terminal (cwd)" })
 vim.keymap.set("n", "<leader>ft", function()
-        Snacks.terminal(nil, { cwd = project_root() })
+        Snacks.terminal(nil, { cwd = current_file_parent() })
 end, { desc = "Terminal (Root Dir)" })
 
 vim.keymap.set({ "n", "t" }, "<c-/>", function()
