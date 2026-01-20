@@ -88,7 +88,10 @@ require("lazy").setup({
         -- Navigations
         { import = "plugins.before" },
         { import = "plugins.flash" },
+        { import = "plugins.todo" },
+
         { import = "plugins.gitsigns" },
+        { import = "plugins.symbol-usage" },
         { import = "plugins.import" },
         { import = "plugins.precognition" },
         -- { import = "plugins.helpers_plugin"}
