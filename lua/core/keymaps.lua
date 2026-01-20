@@ -3,7 +3,7 @@
 -- Obsidian Keymaps
 
 vim.keymap.set("n", "<leader>oe", function()
-        local ft = Buf.ft() -- your helper
+        local ft = M.ft() -- your helper
 
         local template_map = {
                 lua = "lua",
