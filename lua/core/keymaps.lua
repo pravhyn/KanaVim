@@ -483,7 +483,7 @@ vim.keymap.set("n", "<leader>tf", function()
         neotest.run.run(vim.fn.expand("%")) -- run current file
 end)
 
-vim.keymap.set("n", "<leader>ts", function()
+vim.keymap.set("n", "<leader>tss", function()
         neotest.summary.toggle() -- toggle summary panel
 end)
 
