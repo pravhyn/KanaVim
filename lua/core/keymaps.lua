@@ -582,6 +582,23 @@ vim.keymap.set("v", "<leader>jl", function()
         vim.cmd("'<,'>s/\\s\\+/ /g")
 end, { desc = "Join lines & clean spaces" })
 
+vim.keymap.set("n", "gt", tab_next_or_new, { desc = "Next tab or new tab if only one" })
+vim.keymap.set("n", "gT", tab_prev_or_new, { desc = "Prev tab or new tab if only one" })
+local function tab_next_or_new()
+        if vim.fn.tabpagenr("$") == 1 then
+                vim.cmd("tabnew")
+        else
+                vim.cmd("tabnext")
+        end
+end
+
+local function tab_prev_or_new()
+        if vim.fn.tabpagenr("$") == 1 then
+                vim.cmd("tabnew")
+        else
+                vim.cmd("tabprevious")
+        end
+end
 -- vim.keymap.set("n", "yy", '"0yy', { noremap = true, silent = true })
 -- Lua
 -- vim.keymap.set("n", "x", require("substitute").operator, { noremap = true }) -- like yi{ then xi{
