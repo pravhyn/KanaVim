@@ -37,6 +37,20 @@ vim.keymap.set("n", "<leader>og", function()
         vim.cmd("Obsidian search")
 end, { desc = "Obsidian:  Search Notes" })
 
+Snacks.keymap.set("n", "<leader>tt", function()
+        local line = vim.api.nvim_get_current_line()
+
+        if line:match("%[ %]") then
+                line = line:gsub("%[ %]", "[x]", 1)
+        elseif line:match("%[x%]") then
+                line = line:gsub("%[x%]", "[ ]", 1)
+        else
+                return
+        end
+
+        vim.api.nvim_set_current_line(line)
+end, { ft = { "markdown" }, desc = "markdown: check" })
+
 -- better up/down
 vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
 vim.keymap.set({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
