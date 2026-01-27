@@ -81,4 +81,25 @@ function M.write_file(path, content)
         return true
 end
 
+--- closes the current float, return the buf inside the win
+---@return number
+function M.hide_float()
+        local win = vim.api.nvim_get_current_win()
+        local cfg = vim.api.nvim_win_get_config(win)
+
+        if cfg.relative == "" then
+                return -- not a float
+        end
+
+        local buf = vim.api.nvim_win_get_buf(win)
+
+        -- mark buffer as hidden but alive
+        vim.bo[buf].bufhidden = "hide"
+
+        -- close only the window
+        vim.api.nvim_win_close(win, true)
+
+        return buf
+end
+
 return M
