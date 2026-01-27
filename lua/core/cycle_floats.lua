@@ -6,14 +6,17 @@ local function get_floats()
         local floats = {}
 
         for _, win in ipairs(vim.api.nvim_list_wins()) do
-                if is_floating(win) then
-                        table.insert(floats, win)
+                local cfg = vim.api.nvim_win_get_config(win)
+                if cfg.relative ~= "" then
+                        local buf = vim.api.nvim_win_get_buf(win)
+                        if vim.bo[buf].buflisted then
+                                table.insert(floats, win)
+                        end
                 end
         end
 
         return floats
 end
-
 local function cycle_floats()
         local floats = get_floats()
         if #floats == 0 then
