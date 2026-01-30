@@ -10,6 +10,7 @@ local Popup = require("nui.popup")
 -- FIX: File explorer option doesn't work
 
 local function everything(picker)
+        local origin_win = vim.api.nvim_get_current_win()
         local result_box = Popup({
                 enter = true,
                 border = {
@@ -33,6 +34,9 @@ local function everything(picker)
 
                 -- normalize slashes (optional but nice)
                 path = vim.fn.fnamemodify(path, ":p")
+                if origin_win and vim.api.nvim_win_is_valid(origin_win) then
+                        vim.api.nvim_set_current_win(origin_win)
+                end
 
                 vim.cmd("edit " .. vim.fn.fnameescape(path))
         end
