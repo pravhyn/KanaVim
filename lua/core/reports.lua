@@ -53,6 +53,40 @@ vim.keymap.set({ "n", "x" }, "<leader>rl", function()
         end
 end, { desc = "Copy lines + LSP diagnostics" })
 
+local function get_buf_rel_parent_and_name_simple(bufnr)
+        bufnr = bufnr or 0
+        local bufname = vim.api.nvim_buf_get_name(bufnr)
+        if bufname == "" then
+                return nil, nil
+        end
+
+        local filename = vim.fn.fnamemodify(bufname, ":t")
+        local parent = vim.fn.fnamemodify(bufname, ":h")
+        local rel_parent = vim.fn.fnamemodify(parent, ":.")
+
+        return rel_parent, filename
+end
+
+local function paste_buf_rel_path()
+        local dir, file = get_buf_rel_parent_and_name_simple(0)
+        if not dir or not file then
+                return
+        end
+
+        -- format however you like
+        local text = dir .. "/" .. file
+        -- examples:
+        -- local text = dir .. ", " .. file
+        -- local text = string.format('{ "%s", "%s" }', dir, file)
+
+        -- insert at cursor
+        vim.api.nvim_put({ text }, "c", true, true)
+end
+
+vim.keymap.set("n", "<leader>rp", paste_buf_rel_path, {
+        desc = "Paste relative path of current buffer",
+})
+
 -- local M = {}
 --
 -- -- Helper: get diagnostics for the current line
