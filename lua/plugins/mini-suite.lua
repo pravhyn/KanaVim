@@ -36,12 +36,20 @@ return {
                 end,
         },
 
-        {
-                "nvim-mini/mini.pairs",
-                version = false,
-
-                modes = { insert = true, command = false, terminal = false },
-        },
+        -- {
+        --         "nvim-mini/mini.pairs",
+        --         version = false,
+        --         config = function()
+        --                 require('mini.pairs').setup({
+        --
+        --
+        --         modes = { insert = true, command = false, terminal = false },
+        --                 })
+        --
+        --
+        --         end
+        --
+        -- },
         { "nvim-mini/mini.comment", version = false },
         {
                 "nvim-mini/mini.surround",
