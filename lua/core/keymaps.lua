@@ -139,6 +139,15 @@ end, { desc = "which_key_ignore" })
 
 vim.keymap.set("n", "<leader>on", "<CMD>Nvumi<CR>", { desc = "[O]pen [N]vumi" })
 
+-- Runner keymaps
+vim.keymap.set("n", "<leader>rr", ":RunCode<CR>", { noremap = true, silent = false })
+vim.keymap.set("n", "<leader>rf", ":RunFile<CR>", { noremap = true, silent = false })
+vim.keymap.set("n", "<leader>rft", ":RunFile tab<CR>", { noremap = true, silent = false })
+vim.keymap.set("n", "<leader>rp", ":RunProject<CR>", { noremap = true, silent = false })
+vim.keymap.set("n", "<leader>rc", ":RunClose<CR>", { noremap = true, silent = false })
+vim.keymap.set("n", "<leader>crf", ":CRFiletype<CR>", { noremap = true, silent = false })
+vim.keymap.set("n", "<leader>crp", ":CRProjects<CR>", { noremap = true, silent = false })
+
 -- lua
 -- vim.keymap.set({ "n", "x" }, "<localleader>rc", function()
 --         Snacks.debug.run()
@@ -467,6 +476,43 @@ vim.keymap.set("n", "<leader>fd", function()
         })
 end)
 
+-- vim.keymap.set("n", "<leader>fM", function()
+--         Snacks.picker.grep({
+--                 cwd = vim.fn.expand("~/docs/maths"),
+--                 prompt_title = "maths docs",
+--         })
+-- end, { desc = "Maths Docs" })
+
+vim.keymap.set("n", "<leader>fM", function()
+        Snacks.picker.grep({
+                cwd = vim.fn.expand("~/docs/maths"),
+                prompt_title = "Maths PDFs",
+                filetype = { "pdf" },
+
+                -- Custom command:
+                cmd = {
+                        "rg",
+                        "--with-filename",
+                        "--line-number",
+                        "--color=never",
+                        "--no-heading",
+                        "--smart-case",
+                        "-g",
+                        "*.pdf",
+
+                        -- Tell rg to use pdftotext
+                        "--type-add",
+                        "pdf:*.pdf",
+                        "--type",
+                        "pdf",
+                        "--pre",
+                        "pdftotext",
+                        "--pre-glob",
+                        "*.pdf",
+                },
+        })
+end, { desc = "Maths PDFs" })
+
 -- Noetest keymaps
 local neotest = require("neotest")
 
@@ -668,6 +714,15 @@ end
 vim.keymap.set("n", "<leader>qw", kill_everything_and_quit, {
         desc = "Kill all jobs + LSP + terminals, then wqa",
 })
+
+vim.keymap.set("n", "<leader>zz", function()
+        local config = vim.fn.stdpath("config")
+
+        require("snacks").picker.grep({
+                cwd = config,
+                prompt = "RgConfig ❯ ",
+        })
+end, { desc = "grep nvim config" })
 -- vim.keymap.set("n", "yy", '"0yy', { noremap = true, silent = true })
 -- Lua
 -- vim.keymap.set("n", "x", require("substitute").operator, { noremap = true }) -- like yi{ then xi{
