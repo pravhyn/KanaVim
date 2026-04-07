@@ -2,26 +2,6 @@
 
 -- Obsidian Keymaps
 
-vim.keymap.set("n", "<leader>oe", function()
-        local ft = M.ft() -- your helper
-
-        local template_map = {
-                lua = "lua",
-                python = "python",
-                javascript = "js",
-                typescript = "ts",
-                markdown = "default",
-        }
-
-        local template = template_map[ft] or "default"
-
-        -- Ask for title
-        local title = vim.fn.input("Note title: ")
-
-        -- Call Obsidian with explicit template
-        vim.cmd(string.format("Obsidian new_from_template %s %s", title, template))
-end, { desc = "New Obsidian note from filetype template" })
-
 vim.keymap.set("n", "<leader>oc", function()
         vim.cmd("Obsidian new_from_template")
 end, { desc = "Obsidian: New Note From buffer's Current language" })
@@ -102,7 +82,7 @@ end, { desc = "Delete Buffer" })
 vim.keymap.set("n", "<leader>bo", function()
         Snacks.bufdelete.other()
 end, { desc = "Delete Other Buffers" })
-vim.keymap.set("n", "<leader>bD", "<cmd>:bd<cr>", { desc = "Delete Buffer and Window" })
+vim.keymap.set("n", "<leader>D", "<cmd>:bd<cr>", { desc = "Delete Buffer and Window" })
 
 -- save file
 vim.keymap.set({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save File" })
