@@ -26,6 +26,61 @@ end, {})
 --         end,
 -- })
 
+
+-- Store python path
+local stored_python_path = nil
+
+-- Function to get current python path
+local function get_python_path()
+  local handle = io.popen("where python")
+  if not handle then return nil end
+  local result = handle:read("*l")
+  handle:close()
+  return result
+end
+
+-- Capture python path when LSP attaches
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if client and client.name == "pyright" then
+      stored_python_path = get_python_path()
+      print("Stored Python: " .. (stored_python_path or "nil"))
+    end
+  end,
+})
+
+-- Command to check & restart LSP if needed
+vim.api.nvim_create_user_command("CheckPythonEnv", function()
+  local current = get_python_path()
+
+  if not current then
+    print("Could not detect python path")
+    return
+  end
+
+  print("Current: " .. current)
+  print("Stored: " .. (stored_python_path or "nil"))
+
+  if stored_python_path ~= current then
+    print("Python changed! Restarting LSP...")
+
+    -- stop all python LSP clients
+    for _, client in pairs(vim.lsp.get_active_clients()) do
+      if client.name == "pyright" then
+        client.stop()
+      end
+    end
+
+    -- restart LSP
+    vim.cmd("LspStart pyright")
+
+    stored_python_path = current
+  else
+    print("Python environment unchanged.")
+  end
+end, {})
+
 vim.api.nvim_create_autocmd("FileType", {
         pattern = "python",
         callback = function()
@@ -223,3 +278,208 @@ end
 vim.api.nvim_create_user_command("RunConfig", function()
         run()
 end, { desc = "Run Config" })
+
+vim.api.nvim_create_user_command("RunDesc", function()
+        local query = vim.fn.input("Run desc: ")
+        if query == "" then
+                return
+        end
+
+        query = query:lower()
+        local results = {}
+
+        -- -----------------------
+        -- Keymaps
+        -- -----------------------
+        local modes = { "n", "i", "v", "x", "s", "o", "t", "c" }
+
+        for _, mode in ipairs(modes) do
+                for _, map in ipairs(vim.api.nvim_get_keymap(mode)) do
+                        if map.desc and map.desc:lower():find(query, 1, true) then
+                                table.insert(results, {
+                                        kind = "keymap",
+                                        mode = mode,
+                                        lhs = map.lhs,
+                                        rhs = map.rhs,
+                                        desc = map.desc,
+                                })
+                        end
+                end
+        end
+
+        -- -----------------------
+        -- Autocmds
+        -- -----------------------
+        for _, ac in ipairs(vim.api.nvim_get_autocmds({})) do
+                if ac.desc and ac.desc:lower():find(query, 1, true) then
+                        table.insert(results, {
+                                kind = "autocmd",
+                                event = ac.event,
+                                group = ac.group_name,
+                                desc = ac.desc,
+                        })
+                end
+        end
+
+        if vim.tbl_isempty(results) then
+                vim.notify("No matches found", vim.log.levels.INFO)
+                return
+        end
+
+        vim.ui.select(results, {
+                prompt = "Activate:",
+                format_item = function(item)
+                        if item.kind == "keymap" then
+                                return string.format("[keymap %s] %s → %s", item.mode, item.lhs, item.desc)
+                        else
+                                return string.format("[autocmd %s] %s", table.concat(item.event, ","), item.desc)
+                        end
+                end,
+        }, function(choice)
+                if not choice then
+                        return
+                end
+
+                -- -----------------------
+                -- Execute selection
+                -- -----------------------
+                if choice.kind == "keymap" then
+                        -- Replay the keymap
+                        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(choice.lhs, true, false, true), "n", false)
+                elseif choice.kind == "autocmd" then
+                        -- Best-effort: trigger event(s)
+                        for _, ev in ipairs(choice.event) do
+                                vim.cmd("doautocmd " .. ev)
+                        end
+                        vim.notify(
+                                "Triggered autocmd event(s): " .. table.concat(choice.event, ", "),
+                                vim.log.levels.INFO
+                        )
+                end
+        end)
+end, {
+        desc = "Search & activate keymaps or autocmds by description",
+})
+
+vim.api.nvim_create_user_command("SearchDesc", function()
+        local query = vim.fn.input("Search desc: ")
+        if query == "" then
+                return
+        end
+
+        query = query:lower()
+        local items = {}
+
+        -- -----------------------
+        -- Keymaps
+        -- -----------------------
+        local modes = { "n", "i", "v", "x", "s", "o", "t", "c" }
+
+        for _, mode in ipairs(modes) do
+                for _, map in ipairs(vim.api.nvim_get_keymap(mode)) do
+                        if map.desc and map.desc:lower():find(query, 1, true) then
+                                table.insert(items, {
+                                        filename = "[keymap]",
+                                        lnum = 1,
+                                        col = 1,
+                                        text = string.format("[%s] %s → %s", mode, map.lhs, map.desc),
+                                })
+                        end
+                end
+        end
+
+        -- -----------------------
+        -- Autocmds
+        -- -----------------------
+        for _, ac in ipairs(vim.api.nvim_get_autocmds({})) do
+                if ac.desc and ac.desc:lower():find(query, 1, true) then
+                        local group = ac.group_name or "no-group"
+                        local event = table.concat(ac.event, ",")
+
+                        table.insert(items, {
+                                filename = "[autocmd]",
+                                lnum = 1,
+                                col = 1,
+                                text = string.format("[%s | %s] %s", event, group, ac.desc),
+                        })
+                end
+        end
+
+        if vim.tbl_isempty(items) then
+                vim.notify("No matches found", vim.log.levels.INFO)
+                return
+        end
+
+        vim.fn.setqflist({}, " ", {
+                title = "SearchDesc: " .. query,
+                items = items,
+        })
+        vim.cmd("copen")
+end, {
+        desc = "Search keymap & autocmd descriptions",
+})
+
+vim.api.nvim_create_user_command("RgConfig", function()
+        local config = vim.fn.stdpath("config")
+
+        require("snacks").picker.grep({
+                cwd = config,
+                prompt = "RgConfig ❯ ",
+        })
+end, {})
+
+local function get_git_root(path)
+        local dir = vim.fn.fnamemodify(path, ":h")
+
+        local res = vim.system({ "git", "-C", dir, "rev-parse", "--show-toplevel" }, { text = true }):wait()
+
+        if res.code == 0 and res.stdout ~= "" then
+                return res.stdout:gsub("\n", "")
+        end
+
+        return nil
+end
+
+vim.api.nvim_create_user_command("RgSmart", function()
+        local snacks = require("snacks")
+        local cwd = vim.fn.getcwd()
+        local file = vim.api.nvim_buf_get_name(0)
+
+        if file == "" then
+                vim.notify("No file in current buffer")
+                return
+        end
+
+        local file_dir = vim.fn.fnamemodify(file, ":h")
+        local git_root = get_git_root(file)
+
+        local choices = {
+                { label = "CWD", path = cwd },
+                { label = "File project root", path = git_root },
+                { label = "File parent dir", path = file_dir },
+        }
+
+        -- filter invalid ones
+        local items = {}
+        for _, c in ipairs(choices) do
+                if c.path and c.path ~= "" then
+                        table.insert(items, c)
+                end
+        end
+
+        vim.ui.select(items, {
+                prompt = "Rg scope:",
+                format_item = function(item)
+                        return string.format("%-20s %s", item.label, item.path)
+                end,
+        }, function(choice)
+                if not choice then
+                        return
+                end
+
+                snacks.picker.grep({
+                        cwd = choice.path,
+                        prompt = "RgSmart (" .. choice.label .. ") ❯ ",
+                })
+        end)
+end, {})
