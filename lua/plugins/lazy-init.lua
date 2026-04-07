@@ -42,7 +42,10 @@ require("lazy").setup({
         -- { import = "plugins.comment" },
         { import = "plugins.alternate-toggle" },
         -- { import = "plugins.autoclose" },
+        { import = "plugins.auto-pairs" },
+        { import = "plugins.haunt" },
         { import = "plugins.refractor" },
+        { import = "plugins.vim-dadbod" },
         -- { import = "plugins.nvim-surround" },
         -- { import = "plugins.telescope-browser" },
         { import = "plugins.autoclose" },
@@ -65,6 +68,7 @@ require("lazy").setup({
         { import = "plugins.webdevicons" },
         { import = "plugins.rosepinemoon" },
         { import = "plugins.toggleterm" },
+        { import = "plugins.runner" },
 
         { import = "plugins.neotest" },
         -- { import = "plugins.lspSignature" },
@@ -83,6 +87,7 @@ require("lazy").setup({
         -- { import = "plugins.neogit" },
         { import = "plugins.lualine" },
         { import = "plugins.treesitter-textObjects" },
+        { import = "plugins.treesitter-context" },
         -- { import = "plugins.bufferline" },
         { import = "plugins.mini-line" },
         -- Navigations
@@ -96,7 +101,8 @@ require("lazy").setup({
         { import = "plugins.precognition" },
         -- { import = "plugins.helpers_plugin"}
         { import = "plugins.text-objets" },
-        { import = "plugins.nvim-rip-substitute" },
+        -- { import = "plugins.nvim-rip-substitute" },
+        { import = "plugins.emmet-vim" },
 
         -- { import = "plugins.indent-blankline" },
         -- { import = "plugins.none" },
